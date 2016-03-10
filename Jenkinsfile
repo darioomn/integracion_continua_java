@@ -1,45 +1,55 @@
 #!groovy
 
+/*
+// standardBuild from: https://gist.github.com/jglick/b13b509bc236566c8829
+def standardBuild(body) {
+    def config = [:]
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = config
+    body()
+    stage 'checkout'
+    node {
+        checkout scm
+        stage 'main'
+        docker.image(config.environment).inside {
+            sh config.mainScript
+        }
+        stage 'post'
+        sh config.postScript
+    }
+}
 
-stage name: 'setup'
+standardBuild {
+    environment = 'golang:1.5.0'
+    mainScript = '''
+go version
+go build -v hello-world.go
+'''
+    postScript = '''
+ls -l
+./hello-world
+'''
+}
+*/
+
 node {
-    env.each { k,v -> echo "$k = $v" }
+    stage 'checkout'
+    checkout scm
+
+    stage 'build'
     if (isUnix()) {
         echo "unix mode"
 	    sh 'pwd'
         sh "ls -la"
+        sh './gradlew clean build'
     } else {
         echo "windows mode"
         bat "pwd"
         bat "dir"
-    }
-/*
-    wrap([$class: 'Groovy']) {
-        def script = '''
-        println "\n\nSystem Properties"
-        System.properties.each { k,v -> println "$k = $v" }
-
-        println "\n\nEnvironment"
-        System.getenv().each { k,v -> println "$k = $v" }
-'''
-    }
-*/
-
-    // Testing
-//    git url: 'https://github.com/loverde/jenkinsfile-test'
-}
-
-stage name: 'build'
-node {
-    if (isUnix()) {
-         sh './gradlew clean build'
-    } else {
         bat './gradlew.bat clean build'
     }
-}
 
-stage name: 'postbuild'
-node {
+    stage: 'postbuild'
     if (isUnix()) {
         sh 'ls -la'
     } else { 
