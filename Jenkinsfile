@@ -26,7 +26,7 @@ node {
 */
 
     // Testing
-    git url: 'https://github.com/loverde/jenkinsfile-test'
+//    git url: 'https://github.com/loverde/jenkinsfile-test'
 }
 
 stage name: 'build'
