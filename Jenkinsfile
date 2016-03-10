@@ -1,5 +1,8 @@
 #!groovy
 
+println "url: $url"
+System.properties.each { k,v -> println "$k = $v" }
+
 stage name: 'setup'
 node {
     // Testing
