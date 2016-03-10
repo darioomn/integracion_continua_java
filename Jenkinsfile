@@ -3,6 +3,7 @@
 
 stage name: 'setup'
 node {
+    env.each { k,v -> echo "$k = $v" }
     if (isUnix()) {
         echo "unix mode"
 	    sh 'pwd'
