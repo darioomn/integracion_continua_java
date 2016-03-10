@@ -30,10 +30,18 @@ node {
 
 stage name: 'build'
 node {
-    isUnix() ?  sh './gradlew clean build' : bat './gradlew.bat clean build'
+    if (isUnix()) {
+         sh './gradlew clean build'
+    } else {
+        bat './gradlew.bat clean build'
+    }
 }
 
 stage name: 'postbuild'
 node {
-    isUnix() ?  sh 'ls -la' : bat 'dir'
+    if (isUnix()) {
+        sh 'ls -la'
+    } else { 
+        bat 'dir'
+    }
 }
