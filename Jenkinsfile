@@ -3,6 +3,16 @@
 
 stage name: 'setup'
 node {
+    if (isUnix()) {
+        echo "unix mode"
+	    sh 'pwd'
+        sh "ls -la"
+    } else {
+        echo "windows mode"
+        bat "pwd"
+        bat "dir"
+    }
+/*
     wrap([$class: 'Groovy']) {
         def script = '''
         println "\n\nSystem Properties"
@@ -12,22 +22,18 @@ node {
         System.getenv().each { k,v -> println "$k = $v" }
 '''
     }
+*/
 
     // Testing
-	sh 'pwd'
-	sh 'ls -la'
     git url: 'https://github.com/loverde/jenkinsfile-test'
 }
 
 stage name: 'build'
 node {
-	sh 'pwd'
-	sh 'ls -la'
-	sh './gradlew clean build'
+    isUnix() ?  sh './gradlew clean build' : bat './gradlew.bat clean build'
 }
 
 stage name: 'postbuild'
 node {
-	sh 'pwd'
-	sh 'ls -la'
+    isUnix() ?  sh 'ls -la' : bat 'dir'
 }
